@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>手机促销浮动布局</title>
+  </head>
+  <body>
+    <div class="promo-container">
+      <div class="phone-card">
+        <div class="phone-image"></div>
+        <h3>Redmi Note 12 Pro+</h3>
+        <div class="price-tag">￥1999</div>
+        <div class="specs">2亿像素主摄 | 天玑1080</div>
+        <div class="installment">6期免息 ¥333/期</div>
+      </div>
+
+      <div class="phone-card">
+        <div class="phone-image"></div>
+        <h3>Xiaomi 13 Lite</h3>
+        <div class="price-tag">￥2999</div>
+        <div class="specs">骁龙7 Gen1 | 120Hz AMOLED</div>
+        <div class="installment">12期免息 ¥250/期</div>
+      </div>
+
+      <div class="phone-card">
+        <div class="phone-image"></div>
+        <h3>Redmi K60 Pro</h3>
+        <div class="price-tag">￥3299</div>
+        <div class="specs">骁龙8 Gen2 | 2K 高光屏</div>
+        <div class="installment">24期免息 ¥137/期</div>
+      </div>
+    </div>
+  </body>
+</html>
+<style>
+  .promo-container {
+    width: 1278px;
+    background-color: gray;
+    padding: 20px;
+    /* 解决父元素高度塌陷问题 */
+    overflow: hidden;
+    /* 盒子居中 */
+    margin: 0 auto;
+  }
+  .phone-card {
+    position: relative;
+    padding: 10px;
+    float: left;
+    width: 30%;
+    margin-right: 20px;
+    background-color: #fff;
+    border-radius: 20px;
+  }
+  .phone-image {
+    width: 100%;
+    height: 150px;
+    background-color: gray;
+    border-radius: 15px;
+  }
+  .price-tag {
+    position: absolute;
+    top: 177px;
+    right: 18px;
+    width: 92px;
+    height: 50px;
+    background-color: red;
+    color: white;
+    border-radius: 10px;
+    font-size: 25px;
+    font-weight: bold;
+    /* 垂直居中 */
+    line-height: 50px;
+    /* 水平居中 */
+    text-align: center;
+  }
+</style>
