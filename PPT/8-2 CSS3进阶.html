@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Web前端魔法课：第8章 CSS进阶</title>
+  <style>
+    /* 全局与打印重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', sans-serif;
+      background-color: #f0f2f5;
+      color: #222;
+      counter-reset: slideNum;
+      /* 初始化页码计数器 */
+    }
+
+    /* 幻灯片基础样式 (适配 A4 横向尺寸 1122x793) */
+    .slide {
+      width: 1122px;
+      height: 793px;
+      background-color: #ffffff;
+      margin: 30px auto;
+      padding: 60px 80px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      /* 严格防止溢出 */
+      page-break-after: always;
+      counter-increment: slideNum;
+      /* 递增页码 */
+    }
+
+    /* 标题排版 */
+    h1 {
+      font-size: 50px;
+      margin-bottom: 30px;
+      color: #1a73e8;
+      border-bottom: 4px solid #1a73e8;
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    h2 {
+      font-size: 40px;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    h3 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    /* 文本排版 - 确保字号至少24px */
+    p,
+    li {
+      font-size: 28px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    ul,
+    ol {
+      margin-left: 40px;
+      margin-bottom: 20px;
+    }
+
+    /* 代码块样式 - 严格控制 Consolas 字体、粗体、不溢出 */
+    code {
+      font-family: 'Consolas', monospace;
+      font-weight: bold;
+      color: #d81b60;
+      background-color: #fce4ec;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 28px;
+    }
+
+    pre {
+      font-family: 'Consolas', monospace;
+      font-weight: bold;
+      background-color: #f8f9fa;
+      color: #212529;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1.5;
+      border: 2px solid #e0e0e0;
+      white-space: pre-wrap;
+      /* 自动换行防止溢出 */
+      word-wrap: break-word;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    pre span.comment {
+      color: #6a737d;
+      font-style: normal;
+    }
+
+    pre span.tag {
+      color: #22863a;
+    }
+
+    pre span.attr {
+      color: #6f42c1;
+    }
+
+    pre span.string {
+      color: #032f62;
+    }
+
+    /* 任务框特殊样式 */
+    .task-box {
+      background-color: #e8f0fe;
+      border-left: 8px solid #1a73e8;
+      padding: 20px 30px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 20px;
+    }
+
+    .task-box h3 {
+      color: #1a73e8;
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    .task-box p {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    /* 强调文字 */
+    .highlight {
+      color: #e53935;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #43a047;
+      font-weight: bold;
+    }
+
+    /* 页脚页码自动生成 */
+    .footer {
+      position: absolute;
+      bottom: 30px;
+      right: 80px;
+      font-size: 20px;
+      color: #888;
+    }
+
+    .footer::after {
+      content: counter(slideNum) " / 41";
+    }
+
+    /* 首页居中特例 */
+    .slide-cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .slide-cover h1 {
+      border: none;
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .slide-cover p {
+      font-size: 32px;
+      color: #666;
+    }
+
+    /* 打印完美适配 */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      body {
+        background-color: #ffffff;
+      }
+
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        box-shadow: none;
+        border: none;
+        padding: 8% 10%;
+        /* 打印安全边距 */
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Slide 1: Cover -->
+  <div class="slide slide-cover">
+    <h1>第8章：CSS 进阶魔法 🧙‍♂️</h1>
+    <p>让你的网页从“能看”变成“惊艳”</p>
+
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 2: 课程大纲 -->
+  <div class="slide">
+    <h1>📚 本节课大纲</h1>
+    <p>同学们，准备好升级你们的装备了吗？今天我们将解锁以下技能：</p>
+    <ul style="column-count: 2; margin-top: 30px; column-gap: 40px;">
+      <li>8.6 CSS3 选择器进阶</li>
+      <li>8.7 CSS3 <code>transition</code> (过渡)</li>
+      <li>8.8 CSS3 <code>animation</code> (动画)</li>
+      <li>8.9 <code>media queries</code> (响应式)</li>
+      <li>8.10 长度单位与 <code>rem</code></li>
+      <li>8.11 图像解决方案大赏</li>
+      <li>8.12 <code>display: table</code> 神器</li>
+      <li>8.13 <code>display: grid</code> 网格黑科技</li>
+      <li>8.14 CSS 变量管理</li>
+      <li>8.15 重排与重绘 (性能优化)</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 3: 8.6 选择器 引言 -->
+  <div class="slide">
+    <h1>8.6 CSS3 选择器：找人的艺术 🕵️‍♂️</h1>
+    <p>以前我们找元素，只能靠 <code>id</code> 或 <code>class</code>。这就像在全校广播：“三年二班的王小明同学，请到教务处！”</p>
+    <p>但是如果元素没有 <code>class</code> 怎么办？</p>
+    <p><strong>CSS3 选择器</strong> 就像给了你一个超级雷达，你可以这样找人：</p>
+    <ul>
+      <li>找“张老师身后的第三个学生”。</li>
+      <li>找“所有穿红色外套且带有指定 Logo 的学生”。</li>
+    </ul>
+    <p class="highlight">更精准的定位，意味着你可以少写很多无聊的 HTML class 命名！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 4: 8.6.1 伪类 理论 -->
+  <div class="slide">
+    <h1>8.6.1 伪类：元素的“情绪状态” 🎭</h1>
+    <p>什么叫伪类 (Pseudo-classes)？它通常用单冒号 <code>:</code> 表示。</p>
+    <p>你可以把它理解为一个元素的<strong>特定状态</strong>或<strong>特定位置</strong>。</p>
+    <ul>
+      <li><code>:hover</code> —— 鼠标悬停状态（元素感到“痒”了）。</li>
+      <li><code>:focus</code> —— 输入框获得焦点的状态（聚光灯打在它身上）。</li>
+      <li><code>:nth-child(n)</code> —— 找到队伍里特定位置的元素。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 5: 8.6.1 伪类 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 1：给表格换上斑马线衣服</h1>
+    <p>为了让长长的表格更好看，我们希望奇数行和偶数行颜色不一样。</p>
+    <div class="task-box">
+      <h3>任务代码：使用 <code>:nth-child</code></h3>
+      <pre>
+<span class="comment">/* 选中所有偶数行 (even) 改变背景色 */</span>
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+<span class="comment">/* 选中所有奇数行 (odd) */</span>
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+</pre>
+      <p class="success">预期效果：无需给每个 tr 写 class，表格自动变成灰白相间的斑马纹！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 6: 8.6.2 上下文选择器 理论 -->
+  <div class="slide">
+    <h1>8.6.2 上下文选择器：理清亲戚关系 👨‍👦</h1>
+    <p>网页里的标签也是有层级和辈分的，找对辈分才能精准施法。</p>
+    <ul>
+      <li><strong>后代选择器 (空格)</strong>：<code>A B</code> —— 查找 A 里面所有的 B。（儿子、孙子、曾孙子全算！）</li>
+      <li><strong>子代选择器 (<code>&gt;</code>)</strong>：<code>A &gt; B</code> —— 查找 A 的<strong>亲生儿子</strong> B。（孙子不算哦！）
+      </li>
+      <li><strong>相邻兄弟选择器 (<code>+</code>)</strong>：<code>A + B</code> —— 查找紧挨在 A 后面的<strong>亲兄弟</strong> B。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 7: 8.6.2 上下文选择器 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 2：只选中亲儿子</h1>
+    <p>假设有一个多级菜单，我们只想让第一层菜单项变红。</p>
+    <div class="task-box">
+      <pre>
+<span class="tag">&lt;ul</span> <span class="attr">class</span>=<span class="string">"menu"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;li&gt;</span>一级菜单
+        <span class="tag">&lt;ul&gt;</span> <span class="tag">&lt;li&gt;</span>二级菜单 (不要变红)<span class="tag">&lt;/li&gt;</span> <span class="tag">&lt;/ul&gt;</span>
+    <span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span>
+
+<span class="comment">/* ❌ 错误做法：所有 li 都变红了 */</span>
+.menu li { color: red; }
+
+<span class="comment">/* ✅ 正确做法：只找亲儿子 (子代选择器) */</span>
+.menu &gt; li { color: red; }
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 8: 8.6.3 属性选择器 理论 -->
+  <div class="slide">
+    <h1>8.6.3 属性选择器：看标签认人 🏷️</h1>
+    <p>有时候我们不想加 class，但发现元素自带一些特殊的属性。比如 <code>&lt;input type="password"&gt;</code>。</p>
+    <p><strong>语法：</strong> <code>[属性名="属性值"]</code></p>
+    <ul>
+      <li><code>[disabled]</code>：选中所有被禁用的按钮。</li>
+      <li><code>input[type="text"]</code>：只选中普通的文本输入框。</li>
+      <li><code>a[href^="https"]</code>：选中所有链接开头是 https 的超链接（安全链接）。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 9: 8.6.3 属性选择器 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 3：让密码框亮起红灯</h1>
+    <p>表单里有很多输入框，我们只想给密码框加个红色的边框警告用户。</p>
+    <div class="task-box">
+      <pre>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">placeholder</span>=<span class="string">"用户名"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">placeholder</span>=<span class="string">"密码"</span><span class="tag">&gt;</span>
+
+<span class="comment">/* CSS 代码：直接利用 type 属性狙击密码框 */</span>
+input[type="password"] {
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
+</pre>
+      <p class="success">效果：只有密码框的背景和边框变了！没写一个 class！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 10: 8.6.4 伪元素 理论 -->
+  <div class="slide">
+    <h1>8.6.4 伪元素：无中生有之术 👻</h1>
+    <p>伪元素 (Pseudo-elements) 通常用双冒号 <code>::</code> 表示。</p>
+    <p>它可以直接用 CSS 在页面上<strong>凭空捏造</strong>出内容，不需要修改 HTML 文件！</p>
+    <ul>
+      <li><code>::before</code> —— 在元素内容的最前面插入一个“幽灵”。</li>
+      <li><code>::after</code> —— 在元素内容的最后面插入一个“幽灵”。</li>
+    </ul>
+    <p class="highlight">极其重要的咒语：召唤伪元素必须使用 content 属性，哪怕它是空的 content: ""，否则幽灵不会显形！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 11: 8.6.4 伪元素 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 4：用伪元素自动加引号</h1>
+    <p>我们要在名言警句的前后自动加上漂亮的巨型引号。</p>
+    <div class="task-box">
+      <pre>
+<span class="tag">&lt;p</span> <span class="attr">class</span>=<span class="string">"quote"</span><span class="tag">&gt;</span>前端开发是世界上最酷的工作<span class="tag">&lt;/p&gt;</span>
+
+<span class="comment">/* CSS 召唤伪元素 */</span>
+.quote::before {
+    content: "“";
+    color: #1a73e8;
+    font-size: 40px;
+}
+.quote::after {
+    content: "”";
+    color: #1a73e8;
+    font-size: 40px;
+}
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 12: 8.7 Transition 理论 -->
+  <div class="slide">
+    <h1>8.7 CSS3 过渡 (transition) 🏃‍♂️</h1>
+    <p>没有过渡的网页是什么感觉？就像你前一秒在卧室，下一秒瞬间瞬移到了厨房。太突兀了！</p>
+    <p><code>transition</code> 就是给状态的改变加上<strong>平滑的动画效果</strong>。</p>
+    <p>核心四大要素：</p>
+    <ol>
+      <li>要过渡的属性（比如 <code>background-color</code> 或 <code>all</code> 代表全部）。</li>
+      <li>持续时间（比如 <code>0.3s</code> 秒）。</li>
+      <li>运动曲线（比如平滑的 <code>ease</code> 或匀速的 <code>linear</code>）。</li>
+      <li>延迟时间（比如 <code>0s</code>，通常省略）。</li>
+    </ol>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 13: 8.7 Transition 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 5：制作会呼吸的按钮</h1>
+    <p>给按钮加上悬停效果，要求颜色和大小变化是<strong>缓缓发生</strong>的。</p>
+    <div class="task-box">
+      <pre>
+.btn {
+    background-color: #1a73e8;
+    color: white;
+    padding: 10px 20px;
+    <span class="comment">/* 关键魔法：所有属性变化，耗时0.3秒，平滑 */</span>
+    transition: all 0.3s ease; 
+}
+
+.btn:hover {
+    background-color: #d81b60; <span class="comment">/* 变色 */</span>
+    transform: scale(1.1);     <span class="comment">/* 放大 1.1倍 */</span>
+}
+</pre>
+      <p class="highlight">⚠️ 老师的叮嘱：transition 必须写在元素本来的 class 里，千万别写在 :hover 里，否则鼠标移开时就没有动画了！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 14: 8.8 Animation 理论1 -->
+  <div class="slide">
+    <h1>8.8 CSS3 动画 (animation) 🎬</h1>
+    <p>过渡 (transition) 只能实现 A 到 B 的单次变化，且必须要有触发条件（如 hover）。</p>
+    <p>如果你想让元素一打开网页就不停地自己跳舞，你需要请出<strong>动画导演：<code>animation</code></strong>。</p>
+    <p>拍一部动画片分两步：</p>
+    <ol>
+      <li><strong>写剧本</strong>：使用 <code>@keyframes</code> 定义动画的关键帧。</li>
+      <li><strong>演员就位</strong>：给元素添加 <code>animation</code> 属性绑定剧本。</li>
+    </ol>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 15: 8.8 Animation 理论2 -->
+  <div class="slide">
+    <h1>8.8 剧本该怎么写？ 📜</h1>
+    <p>使用百分比来控制时间轴，告诉演员在什么进度做什么动作。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 剧本名：dance */</span>
+@keyframes dance {
+    0%   { transform: rotate(0deg); }   <span class="comment">/* 开场 */</span>
+    50%  { transform: rotate(180deg); } <span class="comment">/* 演到一半 */</span>
+    100% { transform: rotate(360deg); } <span class="comment">/* 结局 */</span>
+}
+</pre>
+    </div>
+    <p>常见的动画属性简写格式：<br>
+      <code>animation: 剧本名称 时长 曲线 延迟 次数 方向;</code>
+    </p>
+    <p>例如：<code>animation: dance 2s linear infinite;</code> (无限循环)</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 16: 8.8 Animation 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 6：让小球永动弹跳</h1>
+    <p>编写一个剧本，让一个红色的圆形小球上下反复弹跳。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 1. 写剧本：命名为 jump */</span>
+@keyframes jump {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-50px); }
+    100% { transform: translateY(0); }
+}
+
+<span class="comment">/* 2. 开拍：应用给小球 */</span>
+.ball {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: red;
+    <span class="comment">/* 绑定jump剧本, 时长1s, 匀速, 无限循环 */</span>
+    animation: jump 1s linear infinite;
+}
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 17: 8.9 Media Queries 理论 -->
+  <div class="slide">
+    <h1>8.9 媒体查询 (Media Queries) 📱💻</h1>
+    <p>你的网页在电脑屏幕上看着很美，但在手机上却挤成了一锅粥？</p>
+    <p>我们需要<strong>响应式设计</strong>，而它的灵魂就是 <code>media queries</code>。</p>
+    <p>媒体查询就像一个变色龙：如果屏幕变窄了，我就换一套 CSS 衣服穿。</p>
+    <ul>
+      <li><code>max-width</code>：如果屏幕宽度<strong>小于等于</strong>这个值，执行代码。（桌面端优先设计法）。</li>
+      <li><code>min-width</code>：如果屏幕宽度<strong>大于等于</strong>这个值，执行代码。（移动端优先设计法，现代大厂首选！）。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 18: 8.9 Media Queries 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 7：电脑左右并排，手机上下堆叠</h1>
+    <p>实现最经典的响应式布局。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 默认：电脑端样式 (左右各占一半) */</span>
+.box { 
+    width: 50%; 
+    float: left; 
+}
+
+<span class="comment">/* 魔法条件：当屏幕宽度小于等于 768px 时 */</span>
+@media screen and (max-width: 768px) {
+    .box {
+        width: 100%; <span class="comment">/* 占满整行，变成上下堆叠 */</span>
+        float: none;
+    }
+}
+</pre>
+      <p class="success">效果：拖动浏览器边缘缩小窗口，布局会瞬间改变！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 19: 8.10.1 常用长度单位 理论 -->
+  <div class="slide">
+    <h1>8.10.1 常用长度单位大作战 📏</h1>
+    <p>我们在写 <code>width</code> 或 <code>font-size</code> 时，到底该用什么单位？</p>
+    <ul>
+      <li><strong><code>px</code> (像素)</strong>：绝对单位。你写 20px，在任何设备上都是绝对的 20px。缺点是不够灵活。</li>
+      <li><strong><code>%</code> (百分比)</strong>：相对单位。相对于父元素的尺寸。常用于布局宽度（如 <code>width: 50%</code>）。</li>
+      <li><strong><code>em</code></strong>：相对单位。相对于<strong>当前元素或父元素</strong>的字体大小。缺点是嵌套深了容易发生“连环相乘”的惨案（比如子代越来越大）。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 20: 8.10.2 rem 理论 -->
+  <div class="slide">
+    <h1>8.10.2 新王者：rem (root em) 👑</h1>
+    <p>为了解决 <code>em</code> 连环相乘的混乱，CSS 引入了 <code>rem</code>。</p>
+    <p><code>rem</code> 中的 r 代表 root（根节点，即 <code>html</code> 标签）。</p>
+    <p><strong>原理：</strong></p>
+    <p>不管你把 <code>rem</code> 写在网页的哪个角落，它都只听命于最高指挥官（<code>html</code>）的 <code>font-size</code>。最高指挥官说是 16px，那么
+      <code>1rem</code> 就是 16px。
+    </p>
+    <p class="highlight">好处：牵一发而动全身！配合媒体查询修改 html 的字体大小，全站的元素都能等比例放大或缩小！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 21: 8.10 长度单位 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 8：用 rem 实现全局缩放</h1>
+    <p>定好根节点基准，其他地方用 rem 做乘法。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 1. 设置根元素基准：1 rem = 16px */</span>
+html { font-size: 16px; }
+
+<span class="comment">/* 2. 当屏幕大于 1200px 时，放大基准 */</span>
+@media (min-width: 1200px) {
+    html { font-size: 20px; } 
+}
+
+<span class="comment">/* 3. 业务代码中使用 rem */</span>
+h1 { font-size: 2rem; } <span class="comment">/* 手机端是32px，大屏自动变40px！ */</span>
+p  { font-size: 1.5rem; }
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 22: 8.11 图像解决方案 引言 -->
+  <div class="slide">
+    <h1>8.11 图像解决方案：应用背景 🖼️</h1>
+    <p>现代网页中充斥着大量的图标（点赞心形、微信Logo、返回箭头）。</p>
+    <p>如果每个图标都用独立的 <code>&lt;img src="...png"&gt;</code>：</p>
+    <ul>
+      <li><strong>性能噩梦</strong>：浏览器要向服务器发起几十上百次 HTTP 请求，页面加载极慢。</li>
+      <li><strong>维护困难</strong>：如果老板说“把所有灰色图标换成蓝色”，美工得重新切几十张图。</li>
+    </ul>
+    <p>前端老司机们为了解决这个问题，发明了一系列神器方案。</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 23: 8.11.2 CSS Sprites 理论 -->
+  <div class="slide">
+    <h1>8.11.2 CSS Sprites (雪碧图/精灵图) 🥤</h1>
+    <p><strong>生活比喻：</strong>去超市买 10 件小商品，你是跑 10 趟超市，还是一次拿个大袋子全装回来？</p>
+    <p><strong>技术原理：</strong></p>
+    <p>把所有小图标拼成一张大图（大袋子），网页只需要请求这 1 张图片。</p>
+    <p>使用时，利用 CSS 的 <code>background-image</code> 和 <code>background-position</code>，就像透过一个小窗户一样，只暴露出你需要的那一个小图标部分。</p>
+    <p class="highlight">现状：老旧项目中常见，现代项目已较少使用（放大容易模糊）。</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 24: 8.11.3 字体图标 理论 -->
+  <div class="slide">
+    <h1>8.11.3 字体图标 (Icon Fonts) 🅰️</h1>
+    <p>既然图片放大不仅模糊且改颜色麻烦，聪明的程序员想：<strong>能不能把图标做成文字（字体）？</strong></p>
+    <p>因为文字有两大绝对优势：</p>
+    <ol>
+      <li>它是<strong>矢量</strong>的，怎么放大都不会出现马赛克模糊。</li>
+      <li>它属于文本，可以直接用 CSS 的 <code>color</code> 属性任意改变颜色！</li>
+    </ol>
+    <p>目前国内最强大的字体图标库是：阿里巴巴矢量图标库 (Iconfont)。</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 25: 8.11.4 SVG 理论 -->
+  <div class="slide">
+    <h1>8.11.4 终极武器：SVG 矢量图 ⚔️</h1>
+    <p>字体图标很好，但它通常只能是单色的（彩色支持较弱）。如果你想要炫酷的多色图标呢？</p>
+    <p><strong>SVG (Scalable Vector Graphics)</strong> 闪亮登场！</p>
+    <p>SVG 不是由像素拼成的图片，它是用一堆<strong>数学代码 (XML)</strong> 画出来的图形。</p>
+    <ul>
+      <li>无限缩放不失真。</li>
+      <li>支持多色彩。</li>
+      <li>可以直接写在 HTML 中，用 CSS 或 JS 还能控制它做动画！</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 26: 8.11.5 基于 iconfont 的方案 -->
+  <div class="slide">
+    <h1>8.11.5 👨‍💻 任务 9：引入 Iconfont 字体图标</h1>
+    <p>假设你在阿里图标库选好了“购物车”图标，如何在代码里使用？</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">&lt;!-- 1. 引入 Iconfont 提供的在线 CSS 文件 --&gt;</span>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"//at.alicdn.com/t/font_xxx.css"</span><span class="tag">&gt;</span>
+
+<span class="comment">&lt;!-- 2. 像使用普通 class 一样召唤图标 --&gt;</span>
+<span class="tag">&lt;i</span> <span class="attr">class</span>=<span class="string">"iconfont icon-shopping-cart"</span><span class="tag">&gt;&lt;/i&gt;</span>
+
+<span class="comment">/* 3. 在你自己的 CSS 中用文字属性控制它 */</span>
+.icon-shopping-cart {
+    font-size: 50px; <span class="comment">/* 放大 */</span>
+    color: red;      <span class="comment">/* 瞬间变红！ */</span>
+}
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 27: 8.11.6 图标网页设计总结 -->
+  <div class="slide">
+    <h1>8.11.6 💡 图像方案大比拼总结</h1>
+    <p>我们在实际进行网页元素设计时，到底该选哪种方案？</p>
+    <ul>
+      <li><strong>复杂的色彩照片或背景：</strong> 老老实实用 <code>JPG / PNG / WebP</code> 格式。</li>
+      <li><strong>大量的单色小图标（如侧边栏导航）：</strong> 强烈推荐 <strong>字体图标 (Iconfont)</strong>，轻量且好变色。</li>
+      <li><strong>高精度的多色Logo或图表：</strong> 首选 <strong>SVG</strong> 代码直接嵌入，最高清且支持交互！</li>
+    </ul>
+    <p class="highlight">忘掉雪碧图吧，现在是 SVG 和字体图标的时代！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 28: 8.12 display:table 理论 -->
+  <div class="slide">
+    <h1>8.12 display: table 老牌神器 📊</h1>
+    <p>在 Flexbox 没普及的黑暗时代，想把一段文字在一个盒子里<strong>绝对垂直居中</strong>，比登天还难。</p>
+    <p>大家发现了一个偏方：HTML 里的 <code>&lt;table&gt;</code> 单元格自带强大的垂直居中属性 (<code>vertical-align: middle</code>)。</p>
+    <p>于是我们用 CSS 强行给普通 div 洗脑：<code>display: table;</code>。</p>
+    <p>让外层 div 假装自己是一个表格，内层 div 假装是单元格，从而蹭到了它的垂直居中能力！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 29: 8.12 display:table 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 10：用 Table 特性实现垂直居中</h1>
+    <p>虽然现在都用 Flex 了，但在维护老项目时你会经常看到这个魔法。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">&lt;!-- HTML 结构 --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"parent"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"child"</span><span class="tag">&gt;</span>几行字<br>我都在正中间<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="comment">/* CSS 代码 */</span>
+.parent {
+    display: table; <span class="comment">/* 父元素扮作表格 */</span>
+    width: 300px; height: 300px;
+}
+.child {
+    display: table-cell; <span class="comment">/* 子元素扮作单元格 */</span>
+    vertical-align: middle; <span class="comment">/* 经典的垂直居中！ */</span>
+}
+</pre>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 30: 8.13 display:grid 理论1 -->
+  <div class="slide">
+    <h1>8.13 终极排版杀器：Grid 网格布局 🍰</h1>
+    <p>如果说用 float 布局像是在玩俄罗斯方块（到处拼凑）。</p>
+    <p>那么现在的 <strong>Grid (网格) 布局就像是在切生日蛋糕</strong>！</p>
+    <p>你可以直接告诉浏览器：“我要把这块区域切成 3 行 3 列，中间留 20px 缝隙。”</p>
+    <ul>
+      <li><strong>Flexbox (弹性盒)</strong> 是一维布局（擅长管好一行或一列里的元素）。</li>
+      <li><strong>Grid (网格)</strong> 是真正的<strong>二维布局</strong>（能够同时掌控行和列的宏大版图）！</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 31: 8.13 display:grid 理论2 -->
+  <div class="slide">
+    <h1>8.13 划分布局与 fr 单位 🎨</h1>
+    <p>Grid 引入了一个极度好用的新长度单位：<code>fr</code> (fraction，份额)。</p>
+    <p>它代表容器剩余空间的“比例份额”。不用再头疼计算百分比了！</p>
+    <p>比如属性：<code>grid-template-columns: 1fr 2fr 1fr;</code></p>
+    <p>意思是把宽度切成三份，第一列占1份宽，第二列占2份宽，第三列占1份宽。简单粗暴！</p>
+    <p>还有网格间距神器：<code>gap: 20px;</code>，一键解决元素之间的缝隙问题。</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 32: 8.13 display:grid 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 11：三行代码排版九宫格照片墙</h1>
+    <p>将 9 张图片完美排列成 3x3 矩阵，且带有均匀的间距。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 只需要给外层的父容器设置样式即可！ */</span>
+.gallery {
+    display: grid; <span class="comment">/* 开启网格魔法 */</span>
+    
+    <span class="comment">/* 划分为 3 列，每列平均分配 (各占 1 份) */</span>
+    grid-template-columns: 1fr 1fr 1fr; 
+    
+    <span class="comment">/* 照片之间的间距：20px */</span>
+    gap: 20px; 
+}
+</pre>
+      <p class="success">里面的子元素 img 完全不需要写布局代码，自动乖乖入座，这就是 Grid 的降维打击！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 33: 8.14 CSS 变量 理论 -->
+  <div class="slide">
+    <h1>8.14 CSS 变量：找个管家管颜色 📒</h1>
+    <p>想象一下，你写了上千行 CSS，里面满屏都是你的品牌主题色 <code>#1a73e8</code>（蓝色）。有一天，老板说：“我觉得绿色更环保，全改成绿色吧！”你会崩溃的。</p>
+    <p>如果 CSS 能像编程语言一样声明一个变量就好了：<code>定义 主题色 = 蓝色;</code></p>
+    <p>好消息是，CSS 原生支持自定义变量了！</p>
+    <ul>
+      <li><strong>定义变量</strong>：名字必须以两个减号 <code>--</code> 开头。</li>
+      <li><strong>使用变量</strong>：使用 <code>var(--变量名)</code> 调用。</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 34: 8.14 CSS 变量 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 12：一键切换主题色</h1>
+    <p>在根节点统一定义颜色，全局调用，为“暗黑模式”打基础。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* 1. 在根伪类 :root 中统一定义变量 (全局管家) */</span>
+:root {
+    --main-color: #1a73e8; <span class="comment">/* 蓝色 */</span>
+    --box-padding: 20px;
+}
+
+<span class="comment">/* 2. 任何地方都可以使用这个变量 */</span>
+.button { background-color: var(--main-color); }
+.title { color: var(--main-color); }
+.box { padding: var(--box-padding); }
+</pre>
+      <p class="success">未来老板再提需求，你只需修改 :root 里的那一行代码即可下班！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 35: 8.15 重排与重绘 理论 -->
+  <div class="slide">
+    <h1>8.15 网页性能优化：重排与重绘 🏗️🎨</h1>
+    <p>浏览器把你写的代码渲染成画面，需要费很大力气。这其中最耗费性能的两个动作叫做：</p>
+    <ul>
+      <li><strong>重排 (Reflow) = 拆墙重盖：</strong> 你改变了元素的宽高、位置（如 <code>width</code>,
+        <code>left</code>），导致浏览器必须重新计算所有元素的几何位置，牵一发而动全身，<span class="highlight">极其消耗性能！卡顿的元凶！</span>
+      </li>
+      <li><strong>重绘 (Repaint) = 重新刷漆：</strong> 你只改变了颜色、背景（如 <code>color</code>）等不影响布局的属性。浏览器只需重新涂上新颜色，<span
+          class="success">性能消耗较小。</span></li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 36: 8.15 重排与重绘 任务 -->
+  <div class="slide">
+    <h1>👨‍💻 任务 13：写出丝滑不卡顿的动画</h1>
+    <p>在做位移动画时，不要使用 <code>left</code> / <code>top</code>，这会引起疯狂的重排。</p>
+    <div class="task-box">
+      <pre>
+<span class="comment">/* ❌ 错误做法：改变 left 引起重排，动画卡顿手机发热 */</span>
+.box:hover {
+    left: 100px;
+    width: 200px;
+}
+
+<span class="comment">/* ✅ 高手做法：使用 transform，只引起重绘，还能开启GPU硬件加速 */</span>
+.box:hover {
+    transform: translateX(100px) scaleX(2);
+}
+</pre>
+      <p class="success">记住：动画首选 transform 和 opacity，这是前端高手的基本修养！</p>
+    </div>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 37: 本章总结 -->
+  <div class="slide">
+    <h1>🏆 第8章 知识点大阅兵</h1>
+    <p>今天我们一起解锁了许多高级魔法，大家还记得吗？</p>
+    <ol>
+      <li>选择器不仅能选身份，还能选状态 (伪类) 和凭空造物 (伪元素)。</li>
+      <li>动起来要平滑 (<code>transition</code>)，自动播放靠导演 (<code>animation</code>)。</li>
+      <li>响应式移动优先靠媒体查询，自适应大小靠 <code>rem</code> 乘法。</li>
+      <li>忘掉雪碧图，拥抱 Iconfont 和 SVG 矢量图。</li>
+      <li>布局从远古 <code>Table</code> 进化到了终极 2D 杀器 <code>Grid</code>。</li>
+      <li>统一管理颜色用变量，改变位置用 <code>transform</code> 防止“重排”卡顿。</li>
+    </ol>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 38: 课后作业布置 -->
+  <div class="slide">
+    <h1>📝 课后实战作业</h1>
+    <p>光说不练假把式，今天的作业非常有趣：</p>
+    <div class="task-box">
+      <h3>任务：制作一个具有响应式的个人名片</h3>
+      <p>1. 运用 <strong>Grid</strong> 将卡片分成头像区和信息区。</p>
+      <p>2. 头像下方添加一组 <strong>Iconfont</strong> 图标（微信、Github）。</p>
+      <p>3. 鼠标悬停在卡片上时，利用 <strong>transition</strong> 和 <strong>transform</strong> 让卡片平滑上浮并增加阴影。</p>
+      <p>4. 运用 <strong>media queries</strong>，让卡片在手机端查看时，头像和信息变成上下排列。</p>
+    </div>
+    <p style="margin-top: 30px;">遇到问题多利用 F12 开发者工具，加油，准魔法师们！</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 39: 课后拓展阅读 -->
+  <div class="slide">
+    <h1>📖 推荐拓展资源</h1>
+    <p>想要更上一层楼？课后可以浏览这些优秀的网站：</p>
+    <ul>
+      <li><strong>MDN Web Docs：</strong> 最权威的 Web 技术文档（前端的《新华字典》）。</li>
+      <li><strong>阿里巴巴矢量图标库 (Iconfont)：</strong> 找图标的终极神器。</li>
+      <li><strong>CSS-Tricks：</strong> 学习 Grid 和 Flexbox 的图文并茂的宝库。</li>
+      <li><strong>CodePen：</strong> 全球前端大神分享酷炫动画和 CSS 魔法的平台，可以去看源码偷师！</li>
+    </ul>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 40: 寄语 -->
+  <div class="slide">
+    <h1>🌟 老司机的寄语</h1>
+    <p>CSS 是一门非常有意思的语言，它不像 JavaScript 那样有着极其严格的逻辑错误提醒。</p>
+    <p>有时少写一个分号，或者单词拼错，它不会报错，只会默默地“样式崩塌”。</p>
+    <p style="margin-top: 30px;" class="highlight">耐心、细心，多用浏览器的“检查”功能（F12）。</p>
+    <p>当你能通过几行代码，把脑海中精美的设计稿完美地还原在屏幕上时，那种成就感是无与伦比的。</p>
+    <div class="footer"></div>
+  </div>
+
+  <!-- Slide 41: 结语 -->
+  <div class="slide slide-cover">
+    <h1>🎉 下课啦！</h1>
+    <p>代码就像魔法，而 CSS 是其中最绚丽的视觉咒语。</p>
+    <p style="margin-top: 40px;">现在打开你的编辑器，去创造属于你的魔法世界吧！</p>
+    <p style="margin-top: 50px; color: #1a73e8; font-size: 36px; font-weight: bold;">Q & A 提问时间</p>
+    <div class="footer"></div>
+  </div>
+
+</body>
+
+</html>

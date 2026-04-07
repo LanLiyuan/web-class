@@ -1,0 +1,1463 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>第8章 CSS进阶与弹性布局实战 - 高级Web前端课程</title>
+    <style>
+      /* ================= 基础重置与全局设置 ================= */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        /* 全局严格使用微软雅黑 */
+        font-family: 'Microsoft YaHei', sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* 强调：内联代码与预格式化文本，严格遵守 Consolas 加粗 24px 要求 */
+      code,
+      pre {
+        font-family: Consolas, monospace;
+        font-weight: bold;
+        font-size: 24px;
+      }
+
+      /* 内联代码的视觉强调，不改变字号 */
+      code {
+        color: #d14;
+        background-color: #f9f2f4;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      /* 代码块样式：白底深字，防止溢出 */
+      pre {
+        background-color: #ffffff;
+        color: #24292e;
+        border: 2px solid #e1e4e8;
+        border-left: 6px solid #ff6700;
+        /* 使用小米橙作为点缀色 */
+        padding: 20px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        /* 自动换行，坚决杜绝溢出 */
+        word-wrap: break-word;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        line-height: 1.5;
+      }
+
+      /* ================= PPT 页面基础排版 ================= */
+      .slide {
+        /* 设定标准 16:9 比例的绝对像素尺寸，保障所有屏幕和打印的一致性 */
+        width: 1280px;
+        height: 720px;
+        background-color: #ffffff;
+        margin: 20px auto;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        /* 防止内容撑破页面 */
+        display: flex;
+        flex-direction: column;
+        padding: 50px 80px;
+        page-break-after: always;
+        /* 打印时分页 */
+      }
+
+      /* 顶部标题栏 */
+      .slide-header {
+        flex: 0 0 auto;
+        border-bottom: 3px solid #ff6700;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+
+      .slide-header h2 {
+        font-size: 40px;
+        color: #2c3e50;
+        font-weight: bold;
+      }
+
+      .slide-header .chapter-tag {
+        font-size: 24px;
+        color: #7f8c8d;
+      }
+
+      /* 内容主体区域 */
+      .slide-body {
+        flex: 1 1 auto;
+        font-size: 28px;
+        /* 至少24px要求，这里设置28px保证清晰 */
+        line-height: 1.6;
+      }
+
+      /* 底部页码栏 */
+      .slide-footer {
+        flex: 0 0 auto;
+        margin-top: 20px;
+        text-align: right;
+        font-size: 20px;
+        color: #95a5a6;
+        border-top: 1px solid #ecf0f1;
+        padding-top: 15px;
+      }
+
+      /* ================= 内容排版辅助样式 ================= */
+      h1 {
+        font-size: 64px;
+        text-align: center;
+        color: #2c3e50;
+        margin-top: 180px;
+      }
+
+      .subtitle {
+        font-size: 32px;
+        text-align: center;
+        color: #ff6700;
+        margin-top: 20px;
+      }
+
+      p {
+        margin-bottom: 20px;
+      }
+
+      ul,
+      ol {
+        margin-left: 40px;
+        margin-bottom: 20px;
+      }
+
+      li {
+        margin-bottom: 15px;
+      }
+
+      /* 重点突出标签 */
+      .highlight {
+        color: #ff6700;
+        font-weight: bold;
+      }
+
+      /* 教师寄语/幽默比喻 引用框 */
+      .teacher-quote {
+        background-color: #fff9f5;
+        border-left: 6px solid #ff6700;
+        padding: 20px 30px;
+        border-radius: 0 8px 8px 0;
+        font-size: 26px;
+        color: #d35400;
+        margin: 30px 0;
+        font-style: italic;
+      }
+
+      /* 任务标记模块 */
+      .task-box {
+        background-color: #f1f8ff;
+        border: 2px solid #c8e1ff;
+        border-radius: 8px;
+        padding: 25px;
+        margin-top: 20px;
+      }
+
+      .task-title {
+        color: #0366d6;
+        font-weight: bold;
+        font-size: 30px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+      }
+
+      /* 两列布局 */
+      .two-column {
+        display: flex;
+        gap: 40px;
+        height: 100%;
+      }
+
+      .two-column > div {
+        flex: 1;
+      }
+
+      /* 预期效果模拟框 */
+      .preview-box {
+        border: 2px dashed #bdc3c7;
+        background-color: #ecf0f1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .flex-demo-container {
+        border: 3px solid #ff6700;
+        background-color: #fdfdfd;
+        padding: 10px;
+        min-height: 200px;
+        border-radius: 8px;
+      }
+
+      .flex-demo-item {
+        width: 80px;
+        height: 80px;
+        background-color: #f1c40f;
+        border: 2px solid #e67e22;
+        color: #333;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        margin: 5px;
+        border-radius: 4px;
+      }
+
+      /* ================= 打印专属样式 ================= */
+      @media print {
+        @page {
+          size: 1280px 720px;
+          margin: 0;
+          /* 必须去掉默认页边距 */
+        }
+
+        body {
+          background-color: transparent;
+        }
+
+        .slide {
+          margin: 0;
+          box-shadow: none;
+          width: 100vw;
+          height: 100vh;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 幻灯片内容开始 -->
+
+    <!-- 第1页：封面 -->
+    <div class="slide">
+      <div class="slide-body">
+        <h1>第8章 CSS进阶与弹性布局实战</h1>
+      </div>
+    </div>
+
+    <!-- 第2页：课程大纲 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>📜 课程大纲大揭秘</h2>
+      </div>
+      <div class="slide-body">
+        <p>
+          同学们好！今天我们要啃一块非常重要、但也非常有意思的“硬骨头”。掌握了今天的内容，你们的排版功力将突破天际！
+        </p>
+        <ul>
+          <li><span class="highlight">8.1 CSS3 概述</span> —— 网页的“高级装修”</li>
+          <li><span class="highlight">8.2 移动网站设计</span> —— 让网页塞进任何手机</li>
+          <li>
+            <span class="highlight">8.3 Flex 弹性布局 (绝对重点)</span> —— 告别
+            Float，迎接魔法橡皮筋
+          </li>
+          <li>
+            <span class="highlight">8.4 使用 Flex 实现自适应宽度</span> —— 实战小米官网经典布局
+          </li>
+          <li><span class="highlight">8.5 CSS3 Transform</span> —— 给网页加上 2D/3D 酷炫特效</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 2</div>
+    </div>
+
+    <!-- 第3页：8.1 CSS3概述 理论 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.1 什么是 CSS3？</h2>
+        <span class="chapter-tag">理论篇</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “想象一下，如果你以前用 CSS2 做网页就像是在给毛坯房刷大白墙，那么有了
+          CSS3，你就是全副武装的高级室内设计师，直接自带全息投影和智能家居功能！”
+        </div>
+        <p>CSS3 是层叠样式表的最新标准，它不仅向后兼容，还带来了爆炸级别的新特性：</p>
+        <ul>
+          <li>更平滑的<span class="highlight">圆角、阴影、渐变</span></li>
+          <li>强大的<span class="highlight">2D/3D 转换与动画</span>，取代繁琐的 JS 动画</li>
+          <li>专为现代设备而生的<span class="highlight">媒体查询与弹性布局</span></li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 3</div>
+    </div>
+
+    <!-- 第4页：8.2 移动网站设计 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.2 移动网站设计：为什么要重视移动端？</h2>
+        <span class="chapter-tag">理论篇</span>
+      </div>
+      <div class="slide-body">
+        <p>同学们，现在谁出门还不带手机？所以，我们的网页必须在手机上看得很舒服！</p>
+        <ul>
+          <li><strong>自适应布局：</strong>服务器根据客户端设备返回不同的页面结构。</li>
+          <li>
+            <strong>响应式布局：</strong>开发<span class="highlight">一套代码</span
+            >，通过媒体查询自动适应从 PC 到手机的所有屏幕。
+          </li>
+          <li>
+            <strong>核心设计原则：</strong>流式网格（Fluid Grid）、响应式图片、对触摸操作友好。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 4</div>
+    </div>
+
+    <!-- 第5页：8.2 Meta Viewport -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.2 移动网站的“敲门砖”：Meta Viewport</h2>
+        <span class="chapter-tag">核心配置</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “如果不加这行代码，手机浏览器会把 PC 网页硬生生缩小塞进屏幕，字小得要拿放大镜看！”
+        </div>
+        <p>在 HTML 的 <code>&lt;head&gt;</code> 标签中，这行代码是响应式网站的灵魂：</p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+        </div>
+        <p><strong>解释：</strong>让视窗宽度等于设备宽度，初始缩放比例为 1.0。</p>
+      </div>
+      <div class="slide-footer">Page 5</div>
+    </div>
+
+    <!-- 第6页：8.3 Flex概述 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3 Flex 弹性布局 (高能预警⚡)</h2>
+        <span class="chapter-tag">绝对重点</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “还记得被 <code>float</code> 和清除浮动支配的恐惧吗？忘掉它们！现在是 Flexbox 的时代！”
+        </div>
+        <p>
+          传统的 <code>float</code> 布局本质是用来做文字环绕图片的，用来做页面排版其实是“歪打正着”。
+        </p>
+        <p>
+          <strong>Flexbox (弹性盒子)</strong> 是专门为现代 UI
+          布局而生的。只需一个属性，子元素就像被装进了弹簧盒子，可以自由伸缩、排列和对齐。
+        </p>
+        <p>在企业级开发中，无论是 PC 端还是移动端，Flex 已成为<strong>首选排版方式</strong>。</p>
+      </div>
+      <div class="slide-footer">Page 6</div>
+    </div>
+
+    <!-- 第7页：8.3.1 核心概念：主轴与侧轴 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.1 最核心概念：主轴与侧轴</h2>
+        <span class="chapter-tag">理论篇</span>
+      </div>
+      <div class="slide-body">
+        <p>搞懂了这两个轴，Flex 布局你就掌握了一半！</p>
+        <div class="teacher-quote">
+          “大家吃过烤面筋吗？<span class="highlight">主轴 (Main Axis)</span>
+          就是穿面筋的那根竹签，元素就是面筋，顺着竹签串。<span class="highlight"
+            >侧轴 (Cross Axis)</span
+          >
+          就是垂直于竹签的方向！”
+        </div>
+        <ul>
+          <li><strong>主轴：</strong> 弹性盒子元素默认沿着主轴排列。</li>
+          <li><strong>侧轴：</strong> 永远垂直于主轴。</li>
+          <li><strong>注意：</strong> 主轴不一定总是水平的！我们可以随时把竹签竖过来。</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 7</div>
+    </div>
+
+    <!-- 第8页：8.3.2 容器属性 display: flex -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 召唤弹性魔法：display: flex</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          只要给父元素（容器）设置
+          <code>display: flex</code
+          >，它里面的子元素，以前的“块元素独占一行”规则全部失效，全部乖乖遵守 Flex 规则！
+        </p>
+        <div class="task-box">
+          <div class="task-title">👨‍💻 任务 1：创建你的第一个弹性容器</div>
+          <pre><code>.container {
+    display: flex; /* 就这一句，魔法开始生效 */
+    background-color: #eee;
+    height: 150px;
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 8</div>
+    </div>
+
+    <!-- 第9页：任务1 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 1：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          当你给父盒子开启了 <code>display: flex</code>，里面三个原本会换行的
+          <code>div</code> 块级元素，现在会乖乖在一行内排排坐：
+        </p>
+        <div class="preview-box">
+          <div class="flex-demo-container" style="display: flex">
+            <div class="flex-demo-item">1</div>
+            <div class="flex-demo-item">2</div>
+            <div class="flex-demo-item">3</div>
+          </div>
+        </div>
+        <p style="margin-top: 20px">
+          <strong>总结：</strong>默认情况下，开启 Flex 后，子元素会沿水平主轴依次从左向右排列。
+        </p>
+      </div>
+      <div class="slide-footer">Page 9</div>
+    </div>
+
+    <!-- 第10页：容器属性 flex-direction -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 改变主轴方向：flex-direction</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “这根串面筋的竹签，我们既可以横着拿，也可以竖着拿。这就是
+          <code>flex-direction</code> 的作用。”
+        </div>
+        <p>可选值有四个：</p>
+        <ul>
+          <li><code>row</code>：默认值，主轴为水平方向，起点在左端。</li>
+          <li><code>row-reverse</code>：主轴为水平方向，起点在右端（反向）。</li>
+          <li><code>column</code>：主轴为垂直方向，起点在上沿。</li>
+          <li><code>column-reverse</code>：主轴为垂直方向，起点在下沿（反向）。</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 10</div>
+    </div>
+
+    <!-- 第11页：任务2 flex-direction 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 2：让元素垂直排列</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>现在的需求是：在弹性容器中，让子元素垂直方向往下排列。</p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.container {
+    display: flex;
+    /* 设置主轴为垂直方向 */
+    flex-direction: column; 
+    height: 400px;
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 11</div>
+    </div>
+
+    <!-- 第12页：任务2 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 2：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>我们把竹签竖过来了，元素自然也跟着垂直排布了：</p>
+        <div class="preview-box">
+          <div
+            class="flex-demo-container"
+            style="display: flex; flex-direction: column; height: 350px"
+          >
+            <div class="flex-demo-item">1</div>
+            <div class="flex-demo-item">2</div>
+            <div class="flex-demo-item">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 12</div>
+    </div>
+
+    <!-- 第13页：容器属性 flex-wrap -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 挤不下怎么办？flex-wrap</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “想象一张三人长椅，来了五个人。默认的 Flex
+          会让大家拼命缩着身子挤在一起。如果不希望他们挤，想让他们坐在后排的椅子上，就要用到
+          <code>flex-wrap</code>。”
+        </div>
+        <p>默认情况下，Flex 容器里的所有元素都会排在一条线上（所谓“不换行”）。</p>
+        <ul>
+          <li><code>nowrap</code>（默认）：不换行，子元素宽度会被强行压缩。</li>
+          <li>
+            <span class="highlight"><code>wrap</code></span
+            >：自动换行，第一行在上方。
+          </li>
+          <li><code>wrap-reverse</code>：换行，第一行在下方。</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 13</div>
+    </div>
+
+    <!-- 第14页：任务3 flex-wrap 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 3：让挤爆的容器自动换行</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>当容器宽度只有 300px，但里面有 5 个 100px 宽的盒子时：</p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.container {
+    display: flex;
+    width: 300px; 
+    /* 允许子元素在空间不足时换行 */
+    flex-wrap: wrap; 
+}
+.item { width: 100px; height: 100px; }</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 14</div>
+    </div>
+
+    <!-- 第15页：任务3 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 3：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <div class="two-column">
+          <div>
+            <p><strong>如果没有 wrap（默认）：</strong><br />盒子被强行压缩宽度，挤在一行。</p>
+            <div class="flex-demo-container" style="display: flex; width: 280px; flex-wrap: nowrap">
+              <div class="flex-demo-item">1</div>
+              <div class="flex-demo-item">2</div>
+              <div class="flex-demo-item">3</div>
+              <div class="flex-demo-item">4</div>
+            </div>
+          </div>
+          <div>
+            <p>
+              <strong>加上 flex-wrap: wrap 之后：</strong
+              ><br />保持原有尺寸，放不下的自动掉入下一行。
+            </p>
+            <div class="flex-demo-container" style="display: flex; width: 280px; flex-wrap: wrap">
+              <div class="flex-demo-item">1</div>
+              <div class="flex-demo-item">2</div>
+              <div class="flex-demo-item">3</div>
+              <div class="flex-demo-item">4</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 15</div>
+    </div>
+
+    <!-- 第16页：容器属性 justify-content -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 主轴对齐魔法：justify-content</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          子元素水平排列后，默认是依次靠左挤在一起的。如果我们想让它们居中、靠右、或者均匀分布在父盒子里，这就是
+          <code>justify-content</code> 的工作范围。
+        </p>
+        <ul>
+          <li><code>flex-start</code>（默认）：左对齐。</li>
+          <li><code>flex-end</code>：右对齐。</li>
+          <li>
+            <span class="highlight"><code>center</code></span
+            >：居中对齐。
+          </li>
+          <li>
+            <span class="highlight"><code>space-between</code></span
+            >：两端对齐，中间元素间距相等。
+          </li>
+          <li>
+            <span class="highlight"><code>space-around</code></span
+            >：每个子元素两侧间距相等。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 16</div>
+    </div>
+
+    <!-- 第17页：任务4 justify-content 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 4：实现“两端对齐”导航栏结构</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          在企业级开发中，最常用的就是 <code>space-between</code>，比如常见的“左侧
+          Logo，右侧菜单”布局。
+        </p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.navbar {
+    display: flex;
+    /* 主轴方向（水平）两端对齐，中间留白 */
+    justify-content: space-between; 
+    background-color: #333;
+    padding: 0 20px;
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 17</div>
+    </div>
+
+    <!-- 第18页：任务4 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 4：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>使用 <code>justify-content: space-between;</code> 后的惊艳效果：</p>
+        <div class="preview-box">
+          <div
+            class="flex-demo-container"
+            style="
+              display: flex;
+              justify-content: space-between;
+              background: #333;
+              border: none;
+              padding: 20px;
+            "
+          >
+            <div style="background: #ff6700; color: white; padding: 10px 20px; font-weight: bold">
+              LOGO
+            </div>
+            <div style="background: #fff; padding: 10px 20px; font-weight: bold">菜单项</div>
+          </div>
+        </div>
+        <p style="margin-top: 30px">如果是 <code>space-around</code> 呢？</p>
+        <div class="preview-box" style="padding: 10px">
+          <div class="flex-demo-container" style="display: flex; justify-content: space-around">
+            <div class="flex-demo-item">1</div>
+            <div class="flex-demo-item">2</div>
+            <div class="flex-demo-item">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 18</div>
+    </div>
+
+    <!-- 第19页：容器属性 align-items -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 侧轴对齐魔法：align-items</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “主轴对齐搞定了，侧轴（默认是垂直方向）呢？曾经让前端工程师头疼不已的‘垂直居中’，在 Flex
+          面前就是一句话的事！”
+        </div>
+        <p>
+          <code>align-items</code> 决定了元素在侧轴上的对齐方式（针对<span class="highlight"
+            >单行</span
+          >）：
+        </p>
+        <ul>
+          <li><code>flex-start</code>：上对齐（起点对齐）。</li>
+          <li><code>flex-end</code>：下对齐（终点对齐）。</li>
+          <li>
+            <span class="highlight"><code>center</code></span
+            >：垂直居中（这可是神器！）。
+          </li>
+          <li><code>stretch</code>（默认）：如果子元素未设置高度，将拉伸占满整个容器高度。</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 19</div>
+    </div>
+
+    <!-- 第20页：任务5 align-items 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 5：实现完美的“绝对居中”</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>终极任务：如何让一个盒子在一个大屏幕里，无论宽高，始终水平+垂直双向居中？</p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>body {
+    display: flex;
+    height: 100vh; /* 满屏高度 */
+    justify-content: center; /* 水平（主轴）居中 */
+    align-items: center;     /* 垂直（侧轴）居中 */
+}</code></pre>
+        </div>
+        <p>这三行代码，价值千金，请死死记住！</p>
+      </div>
+      <div class="slide-footer">Page 20</div>
+    </div>
+
+    <!-- 第21页：任务5 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 5：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>完美居中不再需要定位加负边距，Flex 让一切变得优雅：</p>
+        <div class="preview-box" style="height: 400px">
+          <div
+            class="flex-demo-container"
+            style="display: flex; justify-content: center; align-items: center; height: 100%"
+          >
+            <div class="flex-demo-item" style="width: 150px; height: 150px">完美<br />居中</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 21</div>
+    </div>
+
+    <!-- 第22页：容器属性 align-content -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.2 多行侧轴对齐：align-content</h2>
+        <span class="chapter-tag">容器属性</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          <code>align-items</code> 是一行元素自己在自己的范围内垂直对齐。但是如果发生了换行（<code
+            >flex-wrap: wrap</code
+          >），有了好几行，这几行作为一个整体怎么在侧轴上对齐呢？这就需要
+          <code>align-content</code>。
+        </p>
+        <div class="teacher-quote">
+          “注意！<code>align-content</code>
+          对单行元素无效！它操作的是那些发生了换行产生的‘多行大团伙’。”
+        </div>
+        <p>
+          它的取值与 <code>justify-content</code> 类似：<code>flex-start</code>,
+          <code>flex-end</code>, <code>center</code>, <code>space-between</code>,
+          <code>space-around</code>。
+        </p>
+      </div>
+      <div class="slide-footer">Page 22</div>
+    </div>
+
+    <!-- 第23页：8.3.3 Flex项目的属性 flex -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.3 瓜分空间的艺术：项目属性 flex</h2>
+        <span class="chapter-tag">子元素(项目)属性</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “前面的属性都是加在父盒子身上的，现在这个属性
+          <code>flex</code>，是要写在里面的子盒子（项目）身上的！”
+        </div>
+        <p>
+          如果父盒子有剩余的空间，子盒子可以按照一定比例去瓜分它。使用
+          <code>flex</code> 属性时，宽度的设置（width）可能会失效，转而受弹性比例控制。
+        </p>
+        <ul>
+          <li>语法：<code>flex: 1;</code></li>
+          <li>
+            本质：它是 <code>flex-grow</code>, <code>flex-shrink</code> 和
+            <code>flex-basis</code> 的简写。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 23</div>
+    </div>
+
+    <!-- 第24页：任务6 flex 瓜分比例 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 6：按比例瓜分剩余空间</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          假如容器宽度是 1000px，我们放了三个盒子，我们要让它们分别占据 1/4、1/4 和 2/4 的空间：
+        </p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.box1 { flex: 1; background: pink; }
+.box2 { flex: 1; background: skyblue; }
+.box3 { flex: 2; background: yellow; }</code></pre>
+        </div>
+        <p>这里的总份数是 1+1+2 = 4份。<code>box3</code> 直接拿走了总宽度的一半！</p>
+      </div>
+      <div class="slide-footer">Page 24</div>
+    </div>
+
+    <!-- 第25页：任务6 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 6：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>按比例伸缩，这是以前 <code>float</code> 或 <code>width: %</code> 极难完美做到的：</p>
+        <div class="preview-box">
+          <div class="flex-demo-container" style="display: flex; width: 100%">
+            <div
+              style="
+                flex: 1;
+                background: pink;
+                height: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 30px;
+                border: 2px solid #ccc;
+              "
+            >
+              flex: 1
+            </div>
+            <div
+              style="
+                flex: 1;
+                background: skyblue;
+                height: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 30px;
+                border: 2px solid #ccc;
+              "
+            >
+              flex: 1
+            </div>
+            <div
+              style="
+                flex: 2;
+                background: yellow;
+                height: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                font-size: 30px;
+                border: 2px solid #ccc;
+              "
+            >
+              flex: 2
+            </div>
+          </div>
+        </div>
+        <p style="margin-top: 20px">这种比例瓜分正是制作自适应响应式宽度的最核心武器！</p>
+      </div>
+      <div class="slide-footer">Page 25</div>
+    </div>
+
+    <!-- 第26页：灵活的 flex 写法 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.3.3 flex 属性的终极秘密</h2>
+        <span class="chapter-tag">进阶理解</span>
+      </div>
+      <div class="slide-body">
+        <p>有时你会看到 <code>flex</code> 后面跟了三个值，例如：</p>
+        <pre><code>.aside { flex: 0 0 200px; }</code></pre>
+        <p>这三个值分别代表什么？</p>
+        <ol>
+          <li><strong>放大比例 (flex-grow)：</strong>默认为 0，即使有剩余空间也不放大。</li>
+          <li>
+            <strong>缩小比例 (flex-shrink)：</strong>默认为 1，空间不足时按比例缩小。这里写 0
+            表示“坚决不缩小”。
+          </li>
+          <li>
+            <strong>基础尺寸 (flex-basis)：</strong>在分配多余空间之前，项目占据的主轴空间（死死咬住
+            200px）。
+          </li>
+        </ol>
+      </div>
+      <div class="slide-footer">Page 26</div>
+    </div>
+
+    <!-- 第27页：8.4 使用flex实现自适应宽度 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.4 使用 Flex 实现自适应宽度</h2>
+        <span class="chapter-tag">实战篇</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “老板要求：网页左右两侧边栏宽度固定，中间的内容区域能随着屏幕的拉宽自动变大变宽。如果用以前的技术，你会写到怀疑人生。现在，看
+          Flex 如何秒杀这个需求！”
+        </div>
+        <p>
+          这就引出了大名鼎鼎的
+          <strong>1-3-1 经典自适应布局</strong> (又称：圣杯布局/双飞翼布局的现代解法)。
+        </p>
+        <ul>
+          <li>头部 (Header) 和 尾部 (Footer) 占满 100% 宽度。</li>
+          <li>中间分为左中右三块。</li>
+          <li>左右两块写死宽度。</li>
+          <li>中间内容区设置 <span class="highlight">flex: 1</span>，自动吃掉所有剩下的空间。</li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 27</div>
+    </div>
+
+    <!-- 第28页：任务7 经典1-3-1布局 HTML -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 7：经典后台管理布局 (HTML篇)</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>首先，搭建页面的骨架结构：</p>
+        <div class="task-box">
+          <pre><code>&lt;div class="container"&gt;
+    &lt;header&gt;头部&lt;/header&gt;
+    &lt;div class="main"&gt;
+        &lt;aside&gt;左侧固宽菜单&lt;/aside&gt;
+        &lt;section&gt;内容区（自适应拉伸）&lt;/section&gt;
+        &lt;aside&gt;右侧固宽信息栏&lt;/aside&gt;
+    &lt;/div&gt;
+    &lt;footer&gt;尾部&lt;/footer&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 28</div>
+    </div>
+
+    <!-- 第29页：任务7 经典1-3-1布局 CSS -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 7：经典后台管理布局 (CSS篇)</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          关键的魔法在于 <code>.main</code> 也是一个 Flex 容器，而中间的 <code>section</code> 设置了
+          <code>flex: 1;</code>。
+        </p>
+        <div class="task-box">
+          <pre><code>.main {
+    display: flex; /* 让中间三块水平排列 */
+    width: 100%;
+}
+.main aside {
+    flex: 0 0 200px; /* 两侧定宽200px，不放大，不缩小 */
+    background-color: #D3DCE6;
+}
+.main section {
+    flex: 1; /* 中间自适应：霸占一切剩余空间！ */
+    background-color: #E9EEF3;
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 29</div>
+    </div>
+
+    <!-- 第30页：任务7 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 7：预期效果展现</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>无论屏幕多大，左右的紫色柱子永远稳如泰山，中间的蓝色区域就像水一样流满剩下的空间：</p>
+        <div class="preview-box" style="padding: 0">
+          <div style="background: #333; color: #fff; height: 50px; line-height: 50px">Header</div>
+          <div style="display: flex; height: 250px">
+            <div
+              style="
+                flex: 0 0 150px;
+                background: #9b59b6;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              左侧定宽
+            </div>
+            <div
+              style="
+                flex: 1;
+                background: #3498db;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              中间内容自适应 (flex: 1)
+            </div>
+            <div
+              style="
+                flex: 0 0 150px;
+                background: #9b59b6;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              右侧定宽
+            </div>
+          </div>
+          <div style="background: #333; color: #fff; height: 50px; line-height: 50px">Footer</div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 30</div>
+    </div>
+
+    <!-- 第31页：8.4.2 自适应宽度图片 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.4.2 自适应宽度中的“刺头”：图片</h2>
+        <span class="chapter-tag">自适应宽度</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “排版做好了，插进一张大图，‘砰’的一声，整个页面被大图撑爆破相了。这种情况眼熟吗？”
+        </div>
+        <p>
+          在自适应布局中，图片如果不加限制，会保持原生像素大小。要让图片跟着父盒子的宽度动态伸缩，必须要进行约束。
+        </p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>img {
+    max-width: 100%; /* 图片最大不超过父容器 */
+    height: auto;    /* 保持原有纵横比，高度自适应 */
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 31</div>
+    </div>
+
+    <!-- 第32页：8.4.3 带距离的自适应宽度 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.4.3 带距离的自适应宽度布局</h2>
+        <span class="chapter-tag">自适应宽度</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          平时我们做的列表，卡片与卡片之间是有间距的（Margin）。如果在 Flex
+          布局中，你想要完美的间距而不破坏整体宽度比例，该怎么做？
+        </p>
+        <p>
+          <strong>传统做法：</strong>给子元素加
+          <code>margin-right: 10px;</code>，然后给父元素加负边距
+          <code>margin-left: -10px;</code> 抵消最后一项的溢出。
+        </p>
+        <p><strong>现代魔法：</strong>使用 Flex 专属属性 <span class="highlight">gap</span>！</p>
+      </div>
+      <div class="slide-footer">Page 32</div>
+    </div>
+
+    <!-- 第33页：任务8 gap属性 实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 8：优雅地设置元素间距 (gap)</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          只要在父容器上写一句
+          <code>gap: 20px;</code>，卡片之间自动保持距离，而卡片与容器边缘不会产生多余的边距！
+        </p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.card-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* 卡片之间的间距为 20px */
+}
+.card { flex: 1; } /* 每张卡片宽度自适应平分 */</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 33</div>
+    </div>
+
+    <!-- 第34页：任务8 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 8：预期效果展现</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>看！中间有间距，但最左和最右紧贴着边框，完美无瑕的带间距自适应！</p>
+        <div class="preview-box">
+          <div class="flex-demo-container" style="display: flex; gap: 30px; background: #e0e0e0">
+            <div
+              style="
+                flex: 1;
+                background: #2ecc71;
+                height: 150px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 28px;
+              "
+            >
+              卡片1
+            </div>
+            <div
+              style="
+                flex: 1;
+                background: #2ecc71;
+                height: 150px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 28px;
+              "
+            >
+              卡片2
+            </div>
+            <div
+              style="
+                flex: 1;
+                background: #2ecc71;
+                height: 150px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 28px;
+              "
+            >
+              卡片3
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 34</div>
+    </div>
+
+    <!-- 第35页：8.5 CSS3 Transform 概述 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.5 网页变魔术：CSS3 Transform 变形</h2>
+        <span class="chapter-tag">动画与特效</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “静态的网页太死板了！鼠标悬停时放大一点、转一圈，立刻就显得高端大气上档次！这就是
+          Transform 的魅力。”
+        </div>
+        <p>
+          <code>transform</code> 属性向元素应用 2D 或 3D
+          转换。该属性允许我们对元素进行旋转、缩放、移动或倾斜。
+        </p>
+        <ul>
+          <li>
+            这不仅仅是改变位置，它是通过计算机 GPU 加速运算的，<span class="highlight"
+              >性能极高，丝滑流畅</span
+            >。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 35</div>
+    </div>
+
+    <!-- 第36页：8.5 基本变形 2D -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.5 基本变形 (2D 转换) 核心方法</h2>
+        <span class="chapter-tag">动画与特效</span>
+      </div>
+      <div class="slide-body">
+        <p>牢记这三大基本操作，你就能组合出无数特效：</p>
+        <ul>
+          <li>
+            <strong>平移：</strong><code>translate(Xpx, Ypx)</code>，改变元素在 X/Y 轴的位置。
+          </li>
+          <li>
+            <strong>缩放：</strong><code>scale(比例)</code>，1 是原尺寸，1.2 是放大 1.2 倍，0.5
+            是缩小一半。
+          </li>
+          <li>
+            <strong>旋转：</strong><code>rotate(角度deg)</code>，例如
+            <code>45deg</code> 代表顺时针转 45 度。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 36</div>
+    </div>
+
+    <!-- 第37页：任务9 2D悬停实战 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 9：让图片悬停时放大并微微旋转</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          小米官网中，鼠标放上去商品卡片微微上浮，这就是用 Transform
+          实现的。我们来写一个稍微夸张点的效果。
+        </p>
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.box {
+    transition: all 0.5s; /* 加上过渡动画，让变形丝滑 */
+}
+.box:hover {
+    /* 组合变形：放大 1.2 倍，并顺时针旋转 10 度 */
+    transform: scale(1.2) rotate(10deg);
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 37</div>
+    </div>
+
+    <!-- 第38页：任务9 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 9：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>
+          在这个页面由于是静态 PDF
+          无法交互，但在你的浏览器里，鼠标放上这个盒子，它会平滑地放大并转一下。
+        </p>
+        <div class="preview-box">
+          <div
+            style="
+              width: 150px;
+              height: 150px;
+              background: #e74c3c;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 50px auto;
+              font-size: 24px;
+              font-weight: bold;
+              transform: scale(1.2) rotate(10deg);
+              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            "
+          >
+            我是变形后的样子
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 38</div>
+    </div>
+
+    <!-- 第39页：8.5 3D 变形 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>8.5 突破次元壁：3D 变形</h2>
+        <span class="chapter-tag">动画与特效</span>
+      </div>
+      <div class="slide-body">
+        <div class="teacher-quote">
+          “2D 是在纸面上画画，3D 是直接给你一个立体魔方！我们在网页里增加了 Z
+          轴（指向你眼睛的方向）。”
+        </div>
+        <p>要开启 3D 魔法，必须告诉父盒子“我要打开 3D 空间”：</p>
+        <ul>
+          <li>
+            父元素开启 3D 视角：<code>perspective: 800px;</code> (表示你的眼睛距离屏幕 800
+            像素看过去，产生近大远小的透视效果)。
+          </li>
+          <li>
+            关键 3D 方法：<code>rotateX()</code> (绕着横轴翻跟头),
+            <code>rotateY()</code> (绕着竖轴转身)。
+          </li>
+        </ul>
+      </div>
+      <div class="slide-footer">Page 39</div>
+    </div>
+
+    <!-- 第40页：任务10 3D 翻转卡片 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👨‍💻 任务 10：制作一面 3D 翻转卡片</h2>
+        <span class="chapter-tag">代码实操</span>
+      </div>
+      <div class="slide-body">
+        <div class="task-box">
+          <div class="task-title">🔧 核心代码</div>
+          <pre><code>.scene {
+    perspective: 1000px; /* 在父级建立透视镜头 */
+}
+.card {
+    transition: transform 1s;
+    /* 保持内部的 3D 空间 */
+    transform-style: preserve-3d; 
+}
+.scene:hover .card {
+    /* 沿 Y 轴（竖轴）翻转 180 度 */
+    transform: rotateY(180deg); 
+}</code></pre>
+        </div>
+      </div>
+      <div class="slide-footer">Page 40</div>
+    </div>
+
+    <!-- 第41页：任务10 预期效果 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>👀 任务 10：预期效果</h2>
+        <span class="chapter-tag">实战结果</span>
+      </div>
+      <div class="slide-body">
+        <p>当你鼠标移入时，卡片会像一扇门一样在立体的空间中打开、翻面：</p>
+        <div class="preview-box">
+          <div style="perspective: 1000px; width: 200px; margin: 20px auto">
+            <div
+              style="
+                width: 200px;
+                height: 300px;
+                background: #34495e;
+                transform: rotateY(45deg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 28px;
+                box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.5);
+              "
+            >
+              翻转到一半...
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer">Page 41</div>
+    </div>
+
+    <!-- 第42页：小米官网实战复盘 (从大纲到实战) -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>🏆 课程高潮：小米官网首页复盘</h2>
+        <span class="chapter-tag">实战总结</span>
+      </div>
+      <div class="slide-body">
+        <p>回忆一下 PDF 案例中的小米官网，它是如何应用今天所学知识的？</p>
+        <ul>
+          <li>
+            <strong>顶部黑色导航：</strong>
+            <code>display: flex; justify-content: space-between;</code>
+            轻松实现左导航、右登录的排版。
+          </li>
+          <li>
+            <strong>主体搜索与 Logo 行：</strong> <code>align-items: center;</code> 保证
+            Logo、菜单文字和搜索框完美垂直居中！
+          </li>
+          <li>
+            <strong>商品卡片矩阵：</strong> 使用
+            <code>flex-wrap: wrap;</code>，宽度不够自动换行，搭配
+            <code>transform</code> 悬停放大特效。
+          </li>
+        </ul>
+        <p>这就叫：<span class="highlight">基础打得牢，实战跑得快！</span></p>
+      </div>
+      <div class="slide-footer">Page 42</div>
+    </div>
+
+    <!-- 第43页：今日重点复习 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>📝 敲黑板！今日核心知识点总复习</h2>
+        <span class="chapter-tag">课后复习</span>
+      </div>
+      <div class="slide-body">
+        <ol>
+          <li><strong>Meta Viewport：</strong> 移动端自适应的命脉，记得写死。</li>
+          <li><strong>Flex 核心理念：</strong> 分清竹签在哪（主轴方向），肉怎么串（侧轴方向）。</li>
+          <li>
+            <strong>父容器大杀器：</strong> <code>flex-direction</code>, <code>flex-wrap</code>,
+            <code>justify-content</code>, <code>align-items</code>。
+          </li>
+          <li><strong>子项目分配权：</strong> <code>flex: 1</code> 统治剩余空间。</li>
+          <li>
+            <strong>魔法动态效果：</strong> 2D 的 <code>translate/scale/rotate</code> 与 3D
+            的视角设置。
+          </li>
+        </ol>
+      </div>
+      <div class="slide-footer">Page 43</div>
+    </div>
+
+    <!-- 第44页：课后作业 -->
+    <div class="slide">
+      <div class="slide-header">
+        <h2>⚔️ 课后英雄帖：作业实战</h2>
+        <span class="chapter-tag">课后作业</span>
+      </div>
+      <div class="slide-body">
+        <p>光说不练假把式，今晚的作业：</p>
+        <div class="task-box">
+          <div class="task-title">🔥 小米商城购物车页面静态还原</div>
+          <ul>
+            <li>严格使用 Flex 布局完成商品列表，禁止使用 <code>float</code>。</li>
+            <li>实现 1-3-1 的响应式主框架拉伸。</li>
+            <li>
+              鼠标悬停在商品卡片上，要求盒子向上移动（使用
+              <code>transform: translateY(-5px)</code>）并增加阴影扩散效果。
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-footer">Page 44</div>
+    </div>
+
+    <!-- 第45页：结语 -->
+    <div class="slide">
+      <div
+        class="slide-body"
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          height: 100%;
+        "
+      >
+        <h1 style="margin-top: 0; margin-bottom: 50px; font-size: 80px; color: #ff6700">下课！</h1>
+        <p style="font-size: 40px; color: #2c3e50">感谢同学们的认真聆听！</p>
+        <p style="font-size: 30px; margin-top: 40px; color: #7f8c8d">
+          有任何问题，随时在群里 @我！<br />代码的世界，唯有手熟尔！
+        </p>
+      </div>
+      <div class="slide-footer">Page 45</div>
+    </div>
+
+    <!-- 幻灯片内容结束 -->
+  </body>
+</html>
