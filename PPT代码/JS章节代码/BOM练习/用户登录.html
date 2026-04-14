@@ -1,0 +1,31 @@
+<!-- 任务1：用户登录模拟系统
+目标：练习alert(), confirm(), setTimeout()
+场景：用户输入用户名后，系统验证并提示登录结果。 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" id="username" placeholder="请输入用户名" />
+    <button onclick="login()">登录</button>
+  </body>
+</html>
+
+<script>
+  function login() {
+    const username = document.getElementById('username').value;
+
+    // 使用confirm验证输入
+    if (confirm(`确认用户名为 ${username} 吗？`)) {
+      // 延迟1秒显示欢迎消息
+      setTimeout(() => {
+        alert(`欢迎回来，${username}! 🎉`);
+      }, 1000);
+    } else {
+      alert('请重新输入！');
+    }
+  }
+</script>

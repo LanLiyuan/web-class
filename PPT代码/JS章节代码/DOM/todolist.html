@@ -1,0 +1,19 @@
+<!-- 任务2：DOM动态待办清单
+目标：练习getElementsByClassName, createElement, appendChild
+场景：
+用户输入待办事项，动态添加到列表中。 -->
+<input type="text" id="todoInput" />
+<button onclick="addTodo()">添加任务</button>
+<ul class="todo-list"></ul>
+
+<script>
+  function addTodo() {
+    const input = document.getElementById('todoInput');
+    const list = document.getElementsByClassName('todo-list')[0];
+
+    const li = document.createElement('li');
+    li.textContent = input.value;
+    list.appendChild(li);
+    input.value = '';
+  }
+</script>

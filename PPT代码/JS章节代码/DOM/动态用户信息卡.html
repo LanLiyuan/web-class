@@ -1,0 +1,18 @@
+<!-- 任务1：DOM动态用户信息卡
+目标：练习getElementById, innerHTML, style
+场景：
+用户输入信息后，实时更新页面卡片内容与样式。 -->
+<input type="text" id="nameInput" placeholder="输入姓名" />
+<button onclick="updateCard()">生成卡片</button>
+<div id="userCard"></div>
+
+<script>
+  function updateCard() {
+    const name = document.getElementById('nameInput').value;
+    const card = document.getElementById('userCard');
+
+    card.innerHTML = `<h2>${name} 的信息卡</h2>`;
+    card.style.backgroundColor = '#f0f8ff';
+    card.style.padding = '20px';
+  }
+</script>

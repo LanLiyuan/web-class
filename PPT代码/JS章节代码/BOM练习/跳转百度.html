@@ -1,0 +1,15 @@
+<!-- 任务2：页面导航管理器
+目标：练习location对象
+场景：创建按钮控制页面跳转和刷新。 -->
+<button onclick="jumpToBaidu()">跳转百度</button>
+<button onclick="refreshPage()">刷新页面</button>
+
+<script>
+  function jumpToBaidu() {
+    location.href = 'https://www.baidu.com';
+  }
+
+  function refreshPage() {
+    location.reload();
+  }
+</script>

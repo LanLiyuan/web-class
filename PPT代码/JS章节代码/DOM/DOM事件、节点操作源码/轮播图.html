@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片轮播</title>
+    <style>
+      /* 轮播容器样式 */
+      .carousel-container {
+        position: relative;
+        max-width: 1000px;
+        margin: 20px auto;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      /* 图片容器样式 */
+      .slides {
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+
+      /* 单个幻灯片样式 */
+      .slide {
+        min-width: 100%;
+        position: relative;
+      }
+
+      .slide img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* 导航圆点样式 */
+      .dots-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .dot.active {
+        background-color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carousel-container">
+      <div class="slides">
+        <div class="slide">
+          <img src="images/1.jpg" alt="图片1" />
+        </div>
+        <div class="slide">
+          <img src="images/2.jpg" alt="图片2" />
+        </div>
+        <div class="slide">
+          <img src="images/3.jpg" alt="图片3" />
+        </div>
+      </div>
+      <div class="dots-container"></div>
+    </div>
+
+    <script>
+      // 获取DOM元素
+      const carousel = document.querySelector('.carousel-container');
+      const slidesContainer = document.querySelector('.slides');
+      const dotsContainer = document.querySelector('.dots-container');
+      const slides = document.querySelectorAll('.slide');
+
+      let currentIndex = 0;
+      let autoPlayTimer; //自动播放定时器
+
+      // 创建导航圆点（使用for循环）
+      for (let i = 0; i < slides.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', function () {
+          goToSlide(i);
+        });
+        dotsContainer.appendChild(dot);
+      }
+
+      const dots = document.querySelectorAll('.dot');
+
+      // 切换幻灯片函数
+      function goToSlide(index) {
+        currentIndex = index;
+        slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+        updateDots();
+        resetAutoPlay();
+      }
+
+      // 更新导航圆点状态
+      function updateDots() {
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentIndex);
+        });
+      }
+
+      // 自动播放功能
+      function startAutoPlay() {
+        autoPlayTimer = setInterval(() => {
+          currentIndex = (currentIndex + 1) % slides.length;
+          goToSlide(currentIndex);
+        }, 3000);
+      }
+
+      // 重置自动播放
+      function resetAutoPlay() {
+        clearInterval(autoPlayTimer);
+        startAutoPlay();
+      }
+
+      // 鼠标悬停暂停
+      carousel.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
+      carousel.addEventListener('mouseleave', startAutoPlay);
+
+      // 初始化自动播放
+      startAutoPlay();
+    </script>
+  </body>
+</html>

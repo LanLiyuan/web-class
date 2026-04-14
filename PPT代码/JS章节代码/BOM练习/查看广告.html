@@ -1,0 +1,21 @@
+<!-- 任务3：弹窗广告系统（综合）
+目标：综合练习open(), close(), setTimeout()
+场景：
+用户点击按钮打开广告窗口，5秒后自动关闭。 -->
+<button onclick="showAd()">查看广告</button>
+
+<script>
+  let adWindow;
+
+  function showAd() {
+    adWindow = window.open('', '广告', 'width=300,height=200');
+    adWindow.document.write('<h2>限时优惠！🎁</h2><p>5秒后关闭...</p>');
+
+    // 5秒后关闭窗口
+    setTimeout(() => {
+      if (adWindow && !adWindow.closed) {
+        adWindow.close();
+      }
+    }, 5000);
+  }
+</script>

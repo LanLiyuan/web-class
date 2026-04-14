@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+</html>
+<script>
+  let timer; // 先声明变量，不立即初始化
+
+  if (window.confirm('是否启动BOM时钟？')) {
+    timer = setInterval(() => {
+      // 使用Date对象获取当前时间（核心JS对象）
+      const now = new Date();
+
+      // 使用BOM的alert显示时间（每5秒弹窗），now.getSeconds() 获取当前时间的秒数部分
+      if (now.getSeconds() % 5 === 0) {
+        //now.toLocaleTimeString()方法将Date对象转换为本地时间格式的字符串。
+        alert(`⏰ BOM时钟：${now.toLocaleTimeString()}`);
+      }
+      // 使用BOM的console输出到控制台（浏览器环境功能）
+      console.log(`后台时间监测：${now.toLocaleTimeString()}`);
+    }, 1000);
+    console.log('🚀 时钟服务已启动');
+
+    // 添加关闭窗口功能演示
+    setTimeout(() => {
+      if (window.confirm('时钟服务已运行1分钟，是否关闭窗口？')) {
+        window.close();
+      }
+    }, 60000);
+  } else {
+    clearInterval(timer);
+    alert('⏹️ 已取消时钟服务');
+  }
+</script>
